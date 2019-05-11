@@ -34,15 +34,19 @@ app.controller('PatientAppController', function($http, $location, $uibModal) {
         modalInstance.result.then(() => {}, () => {});
     };
 
+
     patientApp.getPrescriptions = () => $http.get(apiBaseURL + "prescriptions")
             .then((response) => patientApp.prescriptions = Objects.keys(response.data)
                 .map((key) => response.data[key].state.data)
                 .reverse());
 
     patientApp.getAppointments = () => $http.get(apiBaseURL + "appointments")
-            .then((response) => patientApp.appointments = Object.keys(response.data)
+            .then((response) =>
+                patientApp.appointments = Object.keys(response.data)
                 .map((key) => response.data[key].state.data)
-                .reverse());
+                .reverse())
+                console.log("TEST LOG")
+                console.log(patientApp.prescriptions)
 
     patientApp.getAppointments();
     patientApp.getPrescriptions();

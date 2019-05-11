@@ -13,26 +13,22 @@
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.1/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.min.js"></script>
-    <script src="js/doctor.js"></script>
+    <script src="patient.js"></script>
 </head>
 
 
-<body ng-app="MedicordAppModule" ng-controller="DoctorAppController as doctorApp">
+<body ng-app="MedicordAppModule" ng-controller="PatientAppController as patientApp">
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">{{doctorApp.thisNode}}</a>
-            <button ng-click="demoApp.openPatientModal()" type="button" class="btn btn-primary navbar-btn">Add Patient</button>
-
-            <button ng-click="demoApp.openAppointmentModal()" type="button" class="btn btn-primary navbar-btn">Add Appointment</button>
-
+            <a class="navbar-brand" href="#">Patient Corda Network identity: {{patientApp.thisNode}}</a>
         </div>
     </div>
 </nav>
 
 
 
-<div class="row">
+   <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-10">
         <div class="panel-group" id="accordion1">
@@ -40,22 +36,22 @@
                 <div class="panel-primary">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            Welcome to Medicord - Doctor Portal
+                            Welcome to Medicord - Patient Portal
                         </h4>
                     </div>
                 </div>
                 <div>
-                    <div class="panel-body"> Medicord a healthcare blockchain application. It guarantee every doctor a trusted, portable and private place to store your medical information. <br>
+                    <div class="panel-body"> Medicord a healthcare blockchain application. It guarentees every patient a trusted, portable and private place to store your medical information. <br>
                         Below is a detailed list of your appointment and prescription history, cryptographically signed and commited to the blockchain ledger
                     </div>
+                </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 
-<!-- medical history -->
+<!-- medical/appointment history -->
 <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-10">
@@ -63,13 +59,14 @@
             <div class="panel">
                 <div class="panel-primary">
                     <div class="panel-heading">
-                        <h4 class="panel-title">Registered Patients:
+                        <h4 class="panel-title">
+                            Medical Appointment History:
                         </h4>
                     </div>
                 </div>
                 <div>
-                    <div ng-show="!doctorApp.appointments.length" class="panel-body"> Below is a detailed list of your appointment history, cryptographically signs and commited to the blockchain ledger </div>
-                    <div ng-repeat="i in doctorApp.appointments" class="panel panel-default">
+                    <div ng-show="!patientApp.appointments.length" class="panel-body"> Below is a detailed list of your appointment history, cryptographically signs and commited to the blockchain ledger </div>
+                    <div ng-repeat="i in patientApp.appointments" class="panel panel-default">
                         <div class="panel-body">
                             <ul>
                                 <li><strong>Doctor:</strong> {{i.doctor}}</li>
@@ -99,13 +96,13 @@
                 <div class="panel-primary">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            Recent Appointments:
+                            Medical Prescription History:
                         </h4>
                     </div>
                 </div>
                 <div>
-                    <div ng-show="!doctorApp.prescriptions.length" class="panel-body">  </div>
-                    <div ng-repeat="j in doctorApp.prescriptions" class="panel panel-default">
+                    <div ng-show="!patientApp.prescriptions.length" class="panel-body">  </div>
+                    <div ng-repeat="j in patientApp.prescriptions" class="panel panel-default">
                         <div class="panel-body">
                             <ul>
                                 <li><strong>Doctor:</strong> {{j.doctor}}</li>
