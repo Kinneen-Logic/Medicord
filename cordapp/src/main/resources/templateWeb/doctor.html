@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example CorDapp</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.1/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/doctor.js"></script>
+</head>
+
+
+<body ng-app="MedicordAppModule" ng-controller="DoctorAppController as doctorApp">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">{{doctorApp.thisNode}}</a>
+            <button ng-click="demoApp.openPatientModal()" type="button" class="btn btn-primary navbar-btn">Add Patient</button>
+
+            <button ng-click="demoApp.openAppointmentModal()" type="button" class="btn btn-primary navbar-btn">Add Appointment</button>
+
+        </div>
+    </div>
+</nav>
+
+
+
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="panel-group" id="accordion1">
+            <div class="panel">
+                <div class="panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            Welcome to Medicord - Doctor Portal
+                        </h4>
+                    </div>
+                </div>
+                <div>
+                    <div class="panel-body"> Medicord a healthcare blockchain application. It guarantee every doctor a trusted, portable and private place to store your medical information. <br>
+                        Below is a detailed list of your appointment and prescription history, cryptographically signed and commited to the blockchain ledger
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- medical history -->
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="panel-group" id="accordion">
+            <div class="panel">
+                <div class="panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Registered Patients:
+                        </h4>
+                    </div>
+                </div>
+                <div>
+                    <div ng-show="!doctorApp.appointments.length" class="panel-body"> Below is a detailed list of your appointment history, cryptographically signs and commited to the blockchain ledger </div>
+                    <div ng-repeat="i in doctorApp.appointments" class="panel panel-default">
+                        <div class="panel-body">
+                            <ul>
+                                <li><strong>Doctor:</strong> {{i.doctor}}</li>
+                                <li>Date : {{i.date}}</li>
+                                <li>Symptoms {{i.symptoms}}</li>
+                                <li>Diagnosis: {{i.diagnosis}}</li>
+                                <li>notes: {{i.notes}}</li>
+                                <li>prescription: {{i.prescription}}</li>
+                                <li>Diagnosis: {{i.diagnosis}}</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+
+<!-- Patients Prescription History -->
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="panel-group" id="accordion2">
+            <div class="panel">
+                <div class="panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            Recent Appointments:
+                        </h4>
+                    </div>
+                </div>
+                <div>
+                    <div ng-show="!doctorApp.prescriptions.length" class="panel-body">  </div>
+                    <div ng-repeat="j in doctorApp.prescriptions" class="panel panel-default">
+                        <div class="panel-body">
+                            <ul>
+                                <li><strong>Doctor:</strong> {{j.doctor}}</li>
+                                <li><strong>Pharmacy:</strong> {{j.pharmacy}}</li>
+                                <li>details : {{j.details}}</li>
+                                <li>quantity {{j.quantity}}</li>
+                                <li>medicine: {{j.medicine}}</li>
+                                <li>notes: {{j.notes}}</li>
+                                <li>prescription: {{j.prescription}}</li>
+                                <li>Diagnosis: {{j.diagnosis}}</li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+
+</body>
+</html>

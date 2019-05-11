@@ -1,0 +1,4 @@
+# Register here any CorDapp plugins extending from net.corda.webserver.services.WebServerPluginRegistry.
+com.template.plugin.PatientWebPlugin
+com.template.plugin.PharmacyWebPlugin
+com.template.plugin.DoctorWebPlugin
