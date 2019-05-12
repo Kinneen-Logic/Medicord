@@ -1,12 +1,9 @@
 package com.template.webserver.controller
 
-import com.template.states.AppointmentState
-import com.template.states.PrescriptionState
+import com.template.api.SERVICE_NAMES1
+import com.template.states.*
 import com.template.webserver.NodeRPCConnection
-import com.template.webserver.utilities.Utilities.Companion.appointmentToJSON
-import com.template.webserver.utilities.Utilities.Companion.prescriptionToJSON
 import net.corda.core.contracts.StateAndRef
-import net.corda.core.contracts.StateRef
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.identity.Party
 import net.corda.core.messaging.vaultQueryBy
@@ -28,16 +25,30 @@ class PatientController(
         private val logger = LoggerFactory.getLogger(RestController::class.java)
     }
 
-    init {
+    init {}
 
-    }
     private val proxy = rpc.proxy
+    private val myLegalName: CordaX500Name = proxy.nodeInfo().legalIdentities.first().name
+
+
 
     @GetMapping(value = "/me", produces = arrayOf("application/json"))
-    private fun getMe() : ResponseEntity<Party> {
-        val me = proxy.nodeInfo().legalIdentities.first()
+    private fun getMe() : ResponseEntity<CordaX500Name> {
+        val me = proxy.nodeInfo().legalIdentities.first().name
         return ResponseEntity.ok().body(me)
     }
+
+    @GetMapping(value = "/peers", produces = arrayOf("application/json"))
+    private fun getPeers() : ResponseEntity<List<CordaX500Name>> {
+        val peers = proxy.networkMapSnapshot()
+        val filtered = peers
+                .map { it.legalIdentities.first().name }
+                //filter out myself, notary and eventual network map started by driver
+                .filter { it.organisation !in (SERVICE_NAMES1 + myLegalName.organisation) }
+
+        return ResponseEntity.ok().body(filtered)
+    }
+
 
     @GetMapping(value = "/appointments", produces = arrayOf("application/json"))
     private fun getAppointments() : ResponseEntity<List<StateAndRef<AppointmentState>>> {
@@ -49,6 +60,24 @@ class PatientController(
     private fun getPrescriptions() : ResponseEntity<List<StateAndRef<PrescriptionState>>>{
         val prescriptionStates = proxy.vaultQueryBy<PrescriptionState>().states
         return ResponseEntity.ok().body(prescriptionStates)
+    }
+
+    @GetMapping(value = "/insurance-history", produces = arrayOf("application/json"))
+    private fun getInsuranceHistorys() : ResponseEntity<List<StateAndRef<InsurerBillState>>>{
+            //TODO
+            return ResponseEntity.ok().body(null)
+    }
+
+    @GetMapping(value = "/medicalcard-history", produces = arrayOf("application/json"))
+    private fun getMedicardCardHistory() : ResponseEntity<List<StateAndRef<GovernmentAgencyBillState>>>{
+            //TODO
+            return ResponseEntity.ok().body(null)
+    }
+
+    @GetMapping(value = "/get-patient", produces = arrayOf("application/json"))
+    private fun getPatient() : ResponseEntity<List<StateAndRef<PatientInitialState>>>{
+        //TODO
+        return ResponseEntity.ok().body(null)
     }
 
 }
