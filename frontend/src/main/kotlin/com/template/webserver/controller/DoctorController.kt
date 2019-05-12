@@ -152,7 +152,7 @@ class DoctorController(
 
         val details = request.getParameter("details").toString()
         val quantity = request.getParameter("quantity").toString()
-        val medecine = request.getParameter("medecine").toString()
+        val medicine = request.getParameter("medicine").toString()
         val patientName = request.getParameter("patient").toString()
         val pharmacyName = request.getParameter("pharmacy").toString()
 
@@ -163,7 +163,7 @@ class DoctorController(
         val pharmacyParty = proxy.wellKnownPartyFromX500Name(pharmacyPartyX500Name) ?: return ResponseEntity.badRequest().body("Party named $pharmacyPartyX500Name cannot be found.\n")
 
         return try {
-            val signedTx = proxy.startTrackedFlow(::PrescriptionInitiatorFlow, details, quantity, medecine, patientParty, pharmacyParty).returnValue.getOrThrow()
+            val signedTx = proxy.startTrackedFlow(::PrescriptionInitiatorFlow, details, quantity, medicine, patientParty, pharmacyParty).returnValue.getOrThrow()
             ResponseEntity.status(HttpStatus.CREATED).body("Transaction id ${signedTx.id} committed to ledger.\n")
 
         } catch (ex: Throwable) {

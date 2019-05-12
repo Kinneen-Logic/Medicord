@@ -56,6 +56,6 @@ task startDoctorServer(type: JavaExec) {
 task startPharmacyServer(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.template.webserver.ServerKt'
-    args '--server.port=50007', '--config.rpc.host=localhost', '--config.rpc.port=10012', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=50007', '--config.rpc.host=localhost', '--config.rpc.port=10018', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
