@@ -6,6 +6,8 @@ import com.template.states.AppointmentState
 import com.template.states.PatientInitialState
 import com.template.states.PrescriptionState
 import com.template.flows.InitialFlow.PatientInitiatorFlow
+import com.template.flows.PrescriptionFlow
+import com.template.flows.PrescriptionFlow.PrescriptionInitiatorFlow
 import com.template.webserver.NodeRPCConnection
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.identity.CordaX500Name
@@ -122,7 +124,7 @@ class DoctorController(
         }
     }
 
-    @PostMapping(value = "/create-appointment" ,produces = arrayOf("text/plain") , headers =  arrayOf("Content-Type=application/x-www-form-urlencoded"))
+    @PostMapping(value = "/create-appointment" , produces = arrayOf(org.springframework.http.MediaType.APPLICATION_JSON_VALUE))
     fun createAppointment(request: HttpServletRequest): ResponseEntity<String> {
         val symptoms = request.getParameter("symptoms").toString()
         val diagnosis = request.getParameter("diagnosis").toString()
@@ -137,6 +139,31 @@ class DoctorController(
 
         return try {
             val signedTx = proxy.startTrackedFlow(::AppointmentInitiatorFlow, symptoms, diagnosis, date, notes, prescription, patientParty).returnValue.getOrThrow()
+            ResponseEntity.status(HttpStatus.CREATED).body("Transaction id ${signedTx.id} committed to ledger.\n")
+
+        } catch (ex: Throwable) {
+            logger.error(ex.message, ex)
+            ResponseEntity.badRequest().body(ex.message!!)
+        }
+    }
+
+    @PostMapping(value = "/create-prescription" , produces = arrayOf(org.springframework.http.MediaType.APPLICATION_JSON_VALUE))
+    fun createPrescription(request: HttpServletRequest): ResponseEntity<String> {
+
+        val details = request.getParameter("details").toString()
+        val quantity = request.getParameter("quantity").toString()
+        val medecine = request.getParameter("medecine").toString()
+        val patientName = request.getParameter("patient").toString()
+        val pharmacyName = request.getParameter("pharmacy").toString()
+
+        val patientPartyX500Name = CordaX500Name.parse(patientName)
+        val patientParty = proxy.wellKnownPartyFromX500Name(patientPartyX500Name) ?: return ResponseEntity.badRequest().body("Party named $patientPartyX500Name cannot be found.\n")
+
+        val pharmacyPartyX500Name = CordaX500Name.parse(pharmacyName)
+        val pharmacyParty = proxy.wellKnownPartyFromX500Name(pharmacyPartyX500Name) ?: return ResponseEntity.badRequest().body("Party named $pharmacyPartyX500Name cannot be found.\n")
+
+        return try {
+            val signedTx = proxy.startTrackedFlow(::PrescriptionInitiatorFlow, details, quantity, medecine, patientParty, pharmacyParty).returnValue.getOrThrow()
             ResponseEntity.status(HttpStatus.CREATED).body("Transaction id ${signedTx.id} committed to ledger.\n")
 
         } catch (ex: Throwable) {
