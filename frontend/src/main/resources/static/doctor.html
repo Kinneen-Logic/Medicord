@@ -21,14 +21,71 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Doctor Corda Network identity: {{doctorApp.thisNode}}</a>
-            <button ng-click="demoApp.openPatientModal()" type="button" class="btn btn-primary navbar-btn">Add Patient</button>
+            <a class="navbar-brand" href="#">Doctor Corda Network identity: {{ doctorApp.thisNode }}</a>
 
-            <button ng-click="demoApp.openAppointmentModal()" type="button" class="btn btn-primary navbar-btn">Add Appointment</button>
+
+            <button ng-click="doctorApp.openDoctorModal()" type="button" class="btn btn-primary navbar-btn">Add Patient</button>
+
+            <button ng-click="doctorApp.openAppointmentModal()" type="button" class="btn btn-primary navbar-btn">Add Appointment</button>
 
         </div>
     </div>
 </nav>
+
+
+<!------ Modals ----------->
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">{{demoApp.thisNode}}</a>
+        </div>
+        <button ng-click="doctorApp.openModal()" type="button" class="btn btn-primary navbar-btn">Create IOU</button>
+    </div>
+</nav>
+
+
+<script type="text/ng-template" id="demoAppModal.html">
+
+    <div class="modal-header">
+        <h4 class="modal-title">Add new IOU</h4>
+    </div>
+
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="counterparty" class="control-label">Counter-party:</label>
+                <select ng-model="modalInstance.form.counterparty" class="form-control" id="counterparty"
+                        ng-options="peer as peer for peer in modalInstance.peers">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="value" class="control-label">Value (Int):</label>
+                <input type="text" ng-model="modalInstance.form.value" class="form-control" id="value">
+            </div>
+            <div ng-show="modalInstance.formError" class="form-group">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    Enter valid IOU parameters
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="modalInstance.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="modalInstance.create()" type="button" class="btn btn-primary">Create IOU</button>
+        </div>
+    </form>
+</script>
+
+
+<script type="text/ng-template" id="messageContent.html">
+    <div class="modal-body" id="modal-body">
+        {{ modalInstanceTwo.message }}
+    </div>
+</script>
+
+
 
 
 
@@ -55,11 +112,47 @@
 </div>
 
 
+<!--  registered patients -->
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="panel-group" id="accordion2">
+            <div class="panel">
+                <div class="panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Appointment History
+                        </h4>
+                    </div>
+                </div>
+                <div>
+                    <div ng-show="!doctorApp.patients.length" class="panel-body"> Below is a detailed list of the patients registered with this practice </div>
+                    <div ng-repeat="k in doctorApp.patients" class="panel panel-default">
+                        <div class="panel-body">
+                            <ul>
+                                <li><strong>Doctor:</strong> {{k.doctor}}</li>
+                                <li>Name : {{i.name}}</li>
+                                <li>Symptoms {{i.symptoms}}</li>
+                                <li>Diagnosis: {{i.diagnosis}}</li>
+                                <li>notes: {{i.notes}}</li>
+                                <li>prescription: {{i.prescription}}</li>
+                                <li>Diagnosis: {{i.diagnosis}}</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+
+
 <!-- medical history -->
 <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-10">
-        <div class="panel-group" id="accordion">
+        <div class="panel-group" id="accordion3">
             <div class="panel">
                 <div class="panel-primary">
                     <div class="panel-heading">
@@ -94,7 +187,7 @@
 <div class="row">
     <div class="col-md-1"></div>
     <div class="col-md-10">
-        <div class="panel-group" id="accordion2">
+        <div class="panel-group" id="accordion4">
             <div class="panel">
                 <div class="panel-primary">
                     <div class="panel-heading">

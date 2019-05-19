@@ -67,7 +67,8 @@ object AppointmentFlow {
             val appointmentState = AppointmentState(symptoms, diagnosis, date, notes, prescription , patient, me) //constructor
 
             // Obtain reference to contract command -> the
-            val createCommand = Command(AppointmentContract.Commands.Create(), appointmentState.participants.map { it.owningKey })
+            val requiredSigners = listOf(ourIdentity.owningKey, patient.owningKey)
+            val createCommand = Command(AppointmentContract.Commands.Create(), requiredSigners)
 
             //create transaction builder
             val transactionBuilder = TransactionBuilder(notary)

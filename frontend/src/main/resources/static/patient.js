@@ -15,7 +15,9 @@ app.controller('PatientAppController', function($http, $location, $uibModal) {
     const apiBaseURL = "/api/patient/";
     let peers = [];
 
-    $http.get(apiBaseURL + "me").then((response) => patientApp.thisNode = response.data.me);
+    $http.get(apiBaseURL + "me").then((response) => patientApp.thisNode = response.data);
+
+    console.log("me endpoint" + patientApp.thisNode)
 
     $http.get(apiBaseURL + "peers").then((response) => peers = response.data.peers);
 
@@ -36,7 +38,7 @@ app.controller('PatientAppController', function($http, $location, $uibModal) {
 
 
     patientApp.getPrescriptions = () => $http.get(apiBaseURL + "prescriptions")
-            .then((response) => patientApp.prescriptions = Objects.keys(response.data)
+            .then((response) => patientApp.prescriptions = Object.keys(response.data)
                 .map((key) => response.data[key].state.data)
                 .reverse());
 

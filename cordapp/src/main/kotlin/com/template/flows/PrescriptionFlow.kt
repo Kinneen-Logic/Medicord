@@ -68,8 +68,9 @@ object PrescriptionFlow {
             //define state being created and written to participants ledgers
             val prescriptionState = PrescriptionState(details, quantity, medicine, patient, pharmacy, me) //constructor
 
-            // Obtain reference to contract command -> the
-            val createCommand = Command(PrescriptionContract.Commands.Create(), prescriptionState.participants.map { it.owningKey })
+            // Obtain reference to contract command
+            val requiredSigners = listOf(patient.owningKey, pharmacy.owningKey)
+            val createCommand = Command(PrescriptionContract.Commands.Create(), requiredSigners)
 
             //create transaction builder
             val transactionBuilder = TransactionBuilder(notary)
@@ -77,7 +78,7 @@ object PrescriptionFlow {
                     .addOutputState(prescriptionState, PRES_CONTRACT_ID)
 
             // verify transaction contract is adhered to.
-            transactionBuilder.verify(serviceHub) //if this is succesful, contract rules has been followed
+            transactionBuilder.verify(serviceHub) //if this is successful, contract rules has been followed
 
             // Sign the transction
             val partSignedTx = serviceHub.signInitialTransaction(transactionBuilder)
@@ -88,7 +89,7 @@ object PrescriptionFlow {
 
 
             //Gather the patient's signature by using the [CollectionSignatureFlow]
-            val fullySigned = subFlow(CollectSignaturesFlow(partSignedTx, setOf(patientSession,pharmacySession)))
+            val fullySigned = subFlow(CollectSignaturesFlow(partSignedTx, setOf(patientSession, pharmacySession)))
 
             // Notarise and record the transaction in both parties' vaults.
             return subFlow(FinalityFlow(fullySigned))

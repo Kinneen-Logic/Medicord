@@ -15,13 +15,15 @@ app.controller('DoctorAppController', function($http, $location, $uibModal) {
     const apiBaseURL = "/api/doctor/";
     let peers = [];
 
-    $http.get(apiBaseURL + "me").then((response) => doctorApp.thisNode = response.data.me);
+    $http.get(apiBaseURL + "me").then((response) => doctorApp.thisNode = response.data);
+
+    console.log(this.valueOf(doctorApp.thisNode));
 
     $http.get(apiBaseURL + "peers").then((response) => peers = response.data.peers);
 
     doctorApp.openModal = () => {
         const modalInstance = $uibModal.open({
-            templateUrl: 'doctor.html',
+            templateUrl: 'demoAppModal.html',
             controller: 'ModalInstanceCtrl',
             controllerAs: 'modalInstance',
             resolve: {
@@ -34,8 +36,13 @@ app.controller('DoctorAppController', function($http, $location, $uibModal) {
         modalInstance.result.then(() => {}, () => {});
     };
 
+    doctorApp.getPatients = () => $http.get(apiBaseURL + "patients")
+        .then((response) => doctorApp.patients = Object.keys(response.data)
+            .map((key) => response.data[key].state.data)
+            .reverse());
+
     doctorApp.getPrescriptions = () => $http.get(apiBaseURL + "prescriptions")
-            .then((response) => doctorApp.prescriptions = Objects.keys(response.data)
+            .then((response) => doctorApp.prescriptions = Object.keys(response.data)
                 .map((key) => response.data[key].state.data)
                 .reverse());
 
@@ -46,36 +53,44 @@ app.controller('DoctorAppController', function($http, $location, $uibModal) {
 
     doctorApp.getAppointments();
     doctorApp.getPrescriptions();
+
+    console.log(doctorApp.appointments);
+    console.log(doctorApp.prescriptions);
 });
 
-app.controller('ModalInstanceCtrl', function ($http, $location, $uibModalInstance, $uibModal, doctorApp, apiBaseURL, peers) {
+app.controller('ModalInstanceCtrl', function ($http, $location, $uibModalInstance, $uibModal, demoApp, apiBaseURL, peers) {
     const modalInstance = this;
 
     modalInstance.peers = peers;
     modalInstance.form = {};
     modalInstance.formError = false;
 
-    // Validate and create IOU.
-    modalInstance.create = () => {
-        if (invalidFormInput()) {
+    // Validates and sends IOU.
+    modalInstance.create = function validateAndSendIOU() {
+        if (modalInstance.form.value <= 0) {
             modalInstance.formError = true;
         } else {
             modalInstance.formError = false;
-
             $uibModalInstance.close();
 
-            const createIOUEndpoint = `${apiBaseURL}create-iou?partyName=${modalInstance.form.counterparty}&iouValue=${modalInstance.form.value}`;
+            let CREATE_IOUS_PATH = apiBaseURL + "create-iou"
 
-            // Create PO and handle success / fail responses.
-            $http.put(createIOUEndpoint).then(
-                (result) => {
-                    modalInstance.displayMessage(result);
-                    doctorApp.getIOUs();
-                    doctorApp.getMyIOUs();
-                },
-                (result) => {
-                    modalInstance.displayMessage(result);
+            let createIOUData = $.param({
+                partyName: modalInstance.form.counterparty,
+                iouValue : modalInstance.form.value
+
+            });
+
+            let createIOUHeaders = {
+                headers : {
+                    "Content-Type": "application/x-www-form-urlencoded"
                 }
+            };
+
+            // Create IOU  and handles success / fail responses.
+            $http.post(CREATE_IOUS_PATH, createIOUData, createIOUHeaders).then(
+                modalInstance.displayMessage,
+                modalInstance.displayMessage
             );
         }
     };
