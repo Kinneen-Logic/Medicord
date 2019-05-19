@@ -8,7 +8,7 @@ app.config(['$qProvider', function ($qProvider) {
     $qProvider.errorOnUnhandledRejections(false);
 }]);
 
-app.controller('PatientAppController', function($http, $location, $uibModal) {
+app.controller('DoctorAppController', function($http, $location, $uibModal) {
     const doctorApp = this;
 
     // We identify the node.
